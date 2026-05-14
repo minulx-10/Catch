@@ -24,9 +24,18 @@ async def on_ready():
     print('------')
     # Cogs 로드
     for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            await bot.load_extension(f'cogs.{filename[:-3]}')
-            print(f'Loaded Cog: {filename}')
+        if filename.endswith('.py') and not filename.startswith('_'):
+            try:
+                await bot.load_extension(f'cogs.{filename[:-3]}')
+                print(f'Loaded Cog: {filename}')
+            except Exception as e:
+                print(f'Failed to load Cog {filename}: {e}')
+
+@bot.command(name='업데이트', help='(관리자용) 최신 코드를 당겨오고 봇을 재시작합니다.')
+@commands.is_owner()
+async def update_bot(ctx):
+    await ctx.send("🔄 업데이트를 위해 봇을 재시작합니다...")
+    await bot.close()
 
 if __name__ == '__main__':
     if not TOKEN or TOKEN == 'your_token_here':
